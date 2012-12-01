@@ -24,7 +24,7 @@ public class FieldParser {
 		float[] pixelData = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), new float[3]);
 		pixelData[0] = pixelData[0] * 360;		
 		if (pixelData[0] >= 179.0 && pixelData[0] < 196.0 && pixelData[1] >= 0.0 && pixelData[1] <= 0.04)
-			return Gem.WHITE;
+			return -Gem.WHITE;
 		if (pixelData[0] >= 179.5 && pixelData[0] < 181.5)
 			return Gem.CYAN;
 		if (pixelData[0] >= 285.5 && pixelData[0] < 287.5)
@@ -41,5 +41,13 @@ public class FieldParser {
 			return Gem.BLUE;
 		
 		return Gem.NONE;
+	}
+	
+	public Boolean compareTwoField(int[][] fieldOne, int[][] fieldTwo) {
+		for (int y=0;y<8;y++)
+			for (int x=0;x<8;x++)
+				if (fieldOne[y][x] != fieldTwo[y][x]) return false;
+		
+		return true;
 	}
 }

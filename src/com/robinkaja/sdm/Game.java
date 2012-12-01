@@ -2,9 +2,12 @@ package com.robinkaja.sdm;
 
 import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 
 public class Game {	
@@ -26,6 +29,7 @@ public class Game {
 	
 	public Robot robot;
 	public FieldParser fieldParser = new FieldParser();
+	public MoveFinder moveFinder = new MoveFinder();
 	
 	Game() {
 		try {
@@ -91,6 +95,42 @@ public class Game {
 	}
 	
 	public int[][] parseField(BufferedImage image) {
-		return fieldParser.parseField(image);
+		int[][] first = fieldParser.parseField(image);
+		int trueCount = 15;
+		while(true) {
+			int[][] second = fieldParser.parseField(image);
+			if (fieldParser.compareTwoField(first, second)) trueCount++;
+			else trueCount=0;
+			first = second.clone();
+			if (trueCount > 25) break;
+		}
+		return first;
+	}
+	
+	public Boolean makeGameMove() {
+		int[][] fieldData = parseField();
+		try {
+			Move move = moveFinder.findBestMove(fieldData);
+			int[][] moveCoordinates = move.getMoveCoordinates();
+			moveCoordinates[0][0] += fieldY;
+			moveCoordinates[1][0] += fieldY;
+			moveCoordinates[0][1] += fieldX;
+			moveCoordinates[1][1] += fieldX;
+			
+			Point mousePoint = MouseInfo.getPointerInfo().getLocation();
+			
+			robot.mouseMove(moveCoordinates[0][1], moveCoordinates[0][0]);
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseMove(moveCoordinates[1][1], moveCoordinates[1][0]);
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			
+			robot.mouseMove((int)mousePoint.getX(), (int)mousePoint.getY());
+		} catch (NoMoveFoundException e) {
+			return false;
+		}
+		
+		return true;
 	}
 }

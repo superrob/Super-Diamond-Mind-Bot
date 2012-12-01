@@ -6,13 +6,13 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JPanel;
 
 public class Main {
 	
 	private Game game = new Game();
 	private JFrame frame;
 	private ImagePanel imagePanel;
+	private JButton playButton;
 
 	/**
 	 * Launch the application.
@@ -51,9 +51,10 @@ public class Main {
 			public void actionPerformed(ActionEvent arg0) {
 				if (game.findGamePosition()) {
 					System.out.println("Spillet blev fundet! X: " + game.rootX + "  Y: " + game.rootY);
+					playButton.setEnabled(true);
 					imagePanel.image = game.getField(true);
 					imagePanel.repaint();
-					
+					/*
 					int[][] field = game.parseField();
 					for (int y=0;y<8;y++) {
 						System.out.print("Linje " + y +": ");
@@ -62,6 +63,7 @@ public class Main {
 						}
 						System.out.println("");
 					}
+					*/
 				} else {
 					System.out.println("Spillet blev IKKE fundet!");
 				}
@@ -73,5 +75,18 @@ public class Main {
 		imagePanel = new ImagePanel();
 		imagePanel.setBounds(10, 45, 272, 272);
 		frame.getContentPane().add(imagePanel);
+		
+		playButton = new JButton("Make move");
+		playButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				imagePanel.image = game.getField(true);
+				imagePanel.repaint();
+				while (game.makeGameMove());
+				System.out.println("Kunne ikke finde et move.");
+			}
+		});
+		playButton.setEnabled(false);
+		playButton.setBounds(175, 11, 106, 23);
+		frame.getContentPane().add(playButton);
 	}
 }
