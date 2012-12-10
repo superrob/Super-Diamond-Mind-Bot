@@ -22,6 +22,9 @@ public class Game {
 	public static int cellPadding = 34;
 	public static int cellTestPoint = 17;
 	
+	public static int startButtonDistanceFromRootX = 222;
+	public static int startButtonDistanceFromRootY = 357;
+	
 	public int rootX;
 	public int rootY;
 	public int fieldX;
@@ -132,5 +135,25 @@ public class Game {
 		}
 		
 		return true;
+	}
+	
+	public Boolean isGameOver() {
+		int[][] fieldData = parseField();
+		for (int y=0;y<8;y++) {
+			for (int x=0;x<8;x++) {
+				if (fieldData[y][x] != Gem.NONE) return false;				
+			}
+		}
+		return true;
+	}
+	
+	public void restartGame() { 
+		//Point mousePoint = MouseInfo.getPointerInfo().getLocation();
+		
+		robot.mouseMove(rootX+startButtonDistanceFromRootX, rootY+startButtonDistanceFromRootY);
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		
+		//robot.mouseMove((int)mousePoint.getX(), (int)mousePoint.getY());
 	}
 }

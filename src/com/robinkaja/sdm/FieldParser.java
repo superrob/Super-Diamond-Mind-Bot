@@ -24,18 +24,16 @@ public class FieldParser {
 		float[] pixelData = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), new float[3]);
 		pixelData[0] = pixelData[0] * 360;		
 		if (pixelData[0] >= 179.0 && pixelData[0] < 196.0 && pixelData[1] >= 0.0 && pixelData[1] <= 0.04)
-			return -Gem.WHITE;
+			return Gem.WHITE;
 		if (pixelData[0] >= 179.5 && pixelData[0] < 181.5)
 			return Gem.CYAN;
 		if (pixelData[0] >= 285.5 && pixelData[0] < 287.5)
 			return Gem.PURPLE;
 		if (pixelData[0] >= 57.5 && pixelData[0] < 59.5)
 			return Gem.YELLOW;
-		if (pixelData[0] >= 0.0 && pixelData[0] < 2.5)
-			return Gem.RED;
 		if (pixelData[0] >= 129.5 && pixelData[0] < 131.5)
 			return Gem.GREEN;
-		if (pixelData[0] >= 0.0 && pixelData[0] < 2.5)
+		if (pixelData[0] > 0.2 && pixelData[0] < 2.5 && pixelData[1] >= 0.3)
 			return Gem.RED;
 		if (pixelData[0] >= 231.0 && pixelData[0] < 233.0)
 			return Gem.BLUE;

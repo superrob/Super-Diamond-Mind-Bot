@@ -81,7 +81,18 @@ public class Main {
 			public void actionPerformed(ActionEvent arg0) {
 				imagePanel.image = game.getField(true);
 				imagePanel.repaint();
-				while (game.makeGameMove());
+				while (!game.isGameOver()) {
+					int[][] field = game.parseField();
+					for (int y=0;y<8;y++) {
+						System.out.print("Linje " + y +": ");
+						for (int x=0;x<8;x++) {
+							System.out.print(field[y][x] + " ");							
+						}
+						System.out.println("");
+					}
+					while (game.makeGameMove());
+				}
+				game.restartGame();
 				System.out.println("Kunne ikke finde et move.");
 			}
 		});
