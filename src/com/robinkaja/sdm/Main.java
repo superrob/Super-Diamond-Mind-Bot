@@ -82,6 +82,7 @@ public class Main {
 				imagePanel.image = game.getField(true);
 				imagePanel.repaint();
 				while (!game.isGameOver()) {
+					/*
 					int[][] field = game.parseField();
 					for (int y=0;y<8;y++) {
 						System.out.print("Linje " + y +": ");
@@ -90,6 +91,7 @@ public class Main {
 						}
 						System.out.println("");
 					}
+					*/
 					while (game.makeGameMove());
 				}
 				game.restartGame();

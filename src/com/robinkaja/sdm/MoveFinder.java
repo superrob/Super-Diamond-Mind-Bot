@@ -7,11 +7,22 @@ public class MoveFinder {
 	
 	}
 	
-	public Move findBestMove(int[][] fieldData) throws NoMoveFoundException {
+	public Move findBestMove(int[][] fieldData, boolean[] diamonds) throws NoMoveFoundException {
 		ArrayList<Move> moveList = findAllMoves(fieldData);
 		if (moveList.isEmpty()) throw(new NoMoveFoundException("No moves"));
 		
-		return moveList.get(0);
+		if (moveList.size() > 1) {
+			int wantedGem = findWantedGem(diamonds);
+			ArrayList<Move> wantedList = new ArrayList<Move>();
+			for (Move move : moveList) {
+				if (move.gemType == wantedGem) wantedList.add(move);
+			}
+			if (!wantedList.isEmpty())
+				moveList = wantedList;
+		}		
+		Move bestMove = moveList.get(0);
+		
+		return bestMove;
 	}
 	
 	public ArrayList<Move> findAllMoves(int[][] fieldData) {
@@ -146,6 +157,17 @@ public class MoveFinder {
 	}
 	
 	public Boolean checkMatch(int gem1, int gem2, int gem3) {
+		if (gem1 == Gem.NONE || gem2 == Gem.NONE || gem3 == Gem.NONE) return false;
 		return (gem1 == gem2 && gem2 == gem3);
+	}
+	
+	public int findWantedGem(boolean[] diamonds) {
+		if (!diamonds[5]) return Gem.BLUE;
+		if (!diamonds[4]) return Gem.GREEN;
+		if (!diamonds[3]) return Gem.RED;
+		if (!diamonds[2]) return Gem.YELLOW;
+		if (!diamonds[1]) return Gem.PURPLE;
+		if (!diamonds[0]) return Gem.CYAN;
+		return Gem.WHITE;
 	}
 }

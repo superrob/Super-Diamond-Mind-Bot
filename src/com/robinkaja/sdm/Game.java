@@ -19,6 +19,11 @@ public class Game {
 	public static int gameField_Width = 272;
 	public static int gameField_Height = 272;
 	
+	public static int diamondFieldDistanceFromRootX = 312;
+	public static int diamondFieldDistanceFromRootY = 353;
+	public static int diamondField_Width = 165;
+	public static int diamondField_Height = 83;
+	
 	public static int cellPadding = 34;
 	public static int cellTestPoint = 17;
 	
@@ -29,10 +34,13 @@ public class Game {
 	public int rootY;
 	public int fieldX;
 	public int fieldY;
+	public int diamondX;
+	public int diamondY;
 	
 	public Robot robot;
 	public FieldParser fieldParser = new FieldParser();
 	public MoveFinder moveFinder = new MoveFinder();
+	public DiamondParser diamondParser = new DiamondParser();
 	
 	Game() {
 		try {
@@ -57,6 +65,8 @@ public class Game {
 					rootY = y-distanceFromRootY;
 					fieldX = rootX+gameFieldDistanceFromRootX;
 					fieldY = rootY+gameFieldDistanceFromRootY;
+					diamondX = rootX+diamondFieldDistanceFromRootX;
+					diamondY = rootY+diamondFieldDistanceFromRootY;
 					return true;
 				}
 			}
@@ -88,8 +98,7 @@ public class Game {
 				}
 			}
 			return newImage;
-		}
-		
+		}		
 		return field;
 	}
 	
@@ -110,10 +119,17 @@ public class Game {
 		return first;
 	}
 	
+	public BufferedImage getDiamondField() {
+		BufferedImage field = null;
+		field = robot.createScreenCapture(new Rectangle(diamondX, diamondY, diamondField_Width, diamondField_Height));	
+		return field;
+	}
+	
 	public Boolean makeGameMove() {
 		int[][] fieldData = parseField();
 		try {
-			Move move = moveFinder.findBestMove(fieldData);
+			boolean[] diamonds = diamondParser.parseDiamonds(getDiamondField());
+			Move move = moveFinder.findBestMove(fieldData, diamonds);
 			int[][] moveCoordinates = move.getMoveCoordinates();
 			moveCoordinates[0][0] += fieldY;
 			moveCoordinates[1][0] += fieldY;
@@ -131,6 +147,7 @@ public class Game {
 			
 			robot.mouseMove((int)mousePoint.getX(), (int)mousePoint.getY());
 		} catch (NoMoveFoundException e) {
+			System.out.println("No moves found");
 			return false;
 		}
 		
